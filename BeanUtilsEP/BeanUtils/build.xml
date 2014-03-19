@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="BeanUtil" default="run">
+	<property environment="env"/>
+	
+	<!-- Set up the properties -->
+	<target name="setProperties" description="set up properties">
+		<property name="project-name"       		value="BeanUtil"/>
+        <property name="main-class"  				value="demo.BeanUtilExample"/>
+        <property name="base-dir"           		value="bin"/>
+		<property name="deploy-dir"          	 	value="deploy"/>
+        <property name="javadoc-dir"       			value="doc"/>
+		<property name="lib-dir"	       			value="lib"/>
+		<property name="ref-dir"       				value="ref"/>
+		<property name="resource-dir"       		value="resource"/>
+		<property name="src-dir"       				value="src"/>
+		<property name="commons-logging.jar"      	value="commons-logging-1.1.1.jar"/>
+		<property name="commons-beanutils.jar"      value="commons-beanutils-1.8.3.jar"/>
+		
+	</target>
+
+	<!-- Necessary checking -->
+	<target name="check" unless="env.JAVA_HOME" depends="setProperties">
+		<fail message="JAVA_HOME must be set!"/>
+	</target>
+	
+	<!-- Clean up the project -->
+    <target name="clean" depends="setProperties">
+        <delete>
+    		<fileset dir="${base-dir}" includes="**/*.class"/>
+    	</delete>
+    	<delete>
+			<fileset dir="${deploy-dir}" includes="**/*.jar"/>
+		</delete>
+    	<delete>
+			<fileset dir="${javadoc-dir}" includes="**/*.*"/>
+		</delete>
+    </target>
+	
+    <!-- Generate java document -->
+    <target name="doc" depends="check">
+        <javadoc destdir="${javadoc-dir}">
+            <fileset dir="${src-dir}" casesensitive="yes">
+            	<include name="**/*.java"/>
+            </fileset>
+        </javadoc>
+    </target>
+	
+	<!-- Create necessary directory -->
+    <target name="prepare" depends="setProperties"> 
+        <mkdir dir="${base-dir}"/>
+    	<mkdir dir="${deploy-dir}"/>
+    	<mkdir dir="${javadoc-dir}"/>
+    	<mkdir dir="${lib-dir}"/>
+    	<mkdir dir="${ref-dir}"/>
+    	<mkdir dir="${resource-dir}"/>
+    </target> 
+
+	<!-- Compile source files -->
+    <target name="compile" depends="prepare">
+		<javac srcdir="${src-dir}" destdir="${base-dir}" includeantruntime="false">
+			<classpath>
+				<pathelement location="${lib-dir}/${commons-logging.jar}"/>
+				<pathelement location="${lib-dir}/${commons-beanutils.jar}"/>
+			</classpath>
+		</javac>
+    </target>
+	
+    <!-- create the jar -->
+    <target name="build" depends="compile">
+        <jar jarfile="deploy/${project-name}.jar" basedir="${base-dir}">
+            <manifest>
+            	<attribute name="Manifest-Version" value="1.0" />
+            	<attribute name="Created-By" value="Chris Wong" />
+            	<attribute name="Main-Class" value="${main-class}" />
+            </manifest>
+        	<zipfileset includes="**/*.class" src="${lib-dir}/${commons-logging.jar}"/>
+        	<zipfileset includes="**/*.class" src="${lib-dir}/${commons-beanutils.jar}"/>
+        </jar>
+    </target>
+	
+	<!-- Run ${main-class} independently -->
+	<target name="run" depends="compile">
+        <java classname="${main-class}" classpath="${base-dir}" >
+        	<classpath>
+				<pathelement location="${lib-dir}/${commons-logging.jar}"/>
+				<pathelement location="${lib-dir}/${commons-beanutils.jar}"/>
+			</classpath>
+        </java>
+    </target>
+
+	<!-- Run by jar -->
+	<target name="jar" depends="build">
+		<java fork="true" failonerror="true" jar="deploy/${project-name}.jar" >
+		</java>
+    </target>
+	
+	<!-- Help menu -->
+	<target name="help" description="help information" depends="check">
+		<echo>Sample cmd: ant run</echo>
+		<echo>	alias to java -cp bin;${lib-dir}\${commons-logging.jar};${lib-dir}\${commons-beanutils.jar} ${main-class}</echo>
+		<echo>Sample cmd: ant jar</echo>
+		<echo>	alias to java -jar deploy\${project-name}.jar</echo>
+	</target>
+	
+	<target name="setcp" depends="setProperties" description="Generate .classpath">
+	    <echo file=".classpath"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry exported="true" kind="lib" path="${lib-dir}/${commons-logging.jar}"/>
+	<classpathentry exported="true" kind="lib" path="${lib-dir}/${commons-beanutils.jar}"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
+]]></echo>
+	</target>
+</project>
