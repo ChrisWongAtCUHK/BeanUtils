@@ -15,7 +15,6 @@
 		<property name="src-dir"       				value="src"/>
 		<property name="commons-logging.jar"      	value="commons-logging-1.1.1.jar"/>
 		<property name="commons-beanutils.jar"      value="commons-beanutils-1.8.3.jar"/>
-		
 	</target>
 
 	<!-- Necessary checking -->

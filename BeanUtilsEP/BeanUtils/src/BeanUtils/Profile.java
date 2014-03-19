@@ -47,11 +47,6 @@ public class Profile {
 	
 	public void setAddresses(Address[] addresses){
 		this.addresses = addresses;
-		/*int i = 0;
-		for(Address address: addresses){
-			this.addresses[i] = address;
-			i++;
-		}*/
 	}
 	
 	public void setPhone(Map<String, String> phone){

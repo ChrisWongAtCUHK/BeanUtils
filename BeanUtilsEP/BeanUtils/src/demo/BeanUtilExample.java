@@ -35,8 +35,8 @@ public class BeanUtilExample {
 
 		Address addr1 = new Address("台灣省", "桃園縣中壢市", "XX路", "100001");
 		Address addr2 = new Address("台灣省", "台北市中山區", "XXX路", "100002");
-		Address[] address = { addr1, addr2 };
-		profile.setAddresses(address);
+		Address[] addresses = { addr1, addr2 };
+		profile.setAddresses(addresses);
 
 		User user = new User();
 		user.setUserId(new Long(123456789));
